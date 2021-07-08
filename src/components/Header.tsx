@@ -6,8 +6,8 @@ const Header: React.FC = () => {
   const theme = useTheme();
   return (
     <header>
-      <AppBar position="static" color="primary">
-        <Toolbar>
+      <AppBar position="static" color="primary" component="div">
+        <Toolbar style={{ minHeight: 64 }}>
           <Typography
             variant="h5"
             component={Link}
