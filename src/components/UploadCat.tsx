@@ -1,4 +1,5 @@
 import { Button, CircularProgress } from "@material-ui/core";
+import { AddAPhoto } from "@material-ui/icons";
 import { useRef } from "react";
 
 interface UploadCatProps {
@@ -22,8 +23,9 @@ const UploadCat: React.FC<UploadCatProps> = ({ loading, uploadHandler }) => {
         color="primary"
         startIcon={loading && <CircularProgress size="1rem" />}
         disabled={loading}
+        endIcon={<AddAPhoto />}
       >
-        Upload
+        Upload your favourite cat
         <input
           ref={buttonRef}
           accept="image/*"
