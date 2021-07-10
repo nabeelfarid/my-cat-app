@@ -7,8 +7,14 @@ const axiosInstance = axios.create({
 });
 
 export const getCatImages = async (): Promise<CatImage[]> => {
-  let { data } = await axiosInstance.get<null, { data: CatImage[] }>(
-    `/images/?limit=99`
+  //first get the total cat count from the response header
+  const response = await axiosInstance.get(`/images/`);
+  const limit = response.headers["pagination-count"] as number;
+  console.log("limit: ", limit, response);
+
+  //then get all the cats based on the total cat count
+  const { data } = await axiosInstance.get<null, { data: CatImage[] }>(
+    `/images/?limit=${limit}`
   );
 
   console.log("Cat Api - getCats:", data);
@@ -87,4 +93,23 @@ export const vote = async (
   console.log("Cat Api - Votes:", data);
 
   return data.id;
+};
+
+export const upload = async (file: File): Promise<CatImage> => {
+  let formData = new FormData();
+  formData.append("file", file);
+
+  const { data } = await axiosInstance.post<FormData, { data: CatImage }>(
+    "/images/upload",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  console.log("Cat Api - Upload:", data);
+
+  return data;
 };
