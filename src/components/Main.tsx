@@ -4,12 +4,13 @@ import * as catsApi from "../cat-api";
 import { CatImage, Favourite, Vote, VoteValue } from "../models";
 import CatCard from "./CatCard";
 import Loader from "./Loader";
+import Error from "./Error";
 import { Route, Routes } from "react-router-dom";
 import UploadCat from "./UploadCat";
 
 const Main = () => {
   const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [catImages, setCatImages] = useState<CatImage[]>([]);
   const [favourites, setFavourites] = useState<Favourite[]>([]);
   const [votes, setVotes] = useState<Vote[]>([]);
@@ -110,13 +111,27 @@ const Main = () => {
   const uploadHandler = async (file: File) => {
     console.log(file);
     setUploadFileInProgress(true);
+    setError(null);
     try {
       const newCat = await catsApi.upload(file);
 
       setCatImages((pre) => [{ id: newCat.id, url: newCat.url }, ...pre]);
       console.log("Cat uploaded succesfully", newCat);
     } catch (error) {
-      console.log("Cat upload error", JSON.stringify(error, null, 2));
+      if (error.response) {
+        setError(error.response.data.message);
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+        // http.ClientRequest in node.js
+        console.log(error.request);
+      }
+      console.log("Cat upload error", JSON.stringify(error.toJSON(), null, 2));
     } finally {
       setUploadFileInProgress(false);
     }
@@ -159,7 +174,11 @@ const Main = () => {
           </Routes>
         </Box>
         <Box>
-          {/* {error && <Error error={error} />} */}
+          {error && (
+            <Box mb={4} textAlign="center">
+              <Error error={error} />
+            </Box>
+          )}
           {loading && <Loader showCircularProgress={false} />}
 
           <Grid container spacing={4}>

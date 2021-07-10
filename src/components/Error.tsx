@@ -7,7 +7,7 @@ export interface ErrorProps {
 
 const Error: React.FC<ErrorProps> = ({ error }) => {
   return (
-    <Box mt={4} role="error-panel">
+    <Box role="error-panel">
       <Typography variant="h4" color="error" gutterBottom>
         ERROR:
       </Typography>

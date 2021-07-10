@@ -9,7 +9,7 @@ interface UploadCatProps {
 const UploadCat: React.FC<UploadCatProps> = ({ loading, uploadHandler }) => {
   const buttonRef = useRef<HTMLInputElement>(null);
   const changeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.currentTarget.files) {
+    if (event.currentTarget.files && event.currentTarget.files.length > 0) {
       uploadHandler(event.currentTarget.files[0]);
     }
   };
